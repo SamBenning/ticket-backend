@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -22,7 +23,8 @@ public class TicketResource {
     private final TicketServiceImpl ticketService;
 
     @GetMapping("/list")
-    public ResponseEntity<Response> getTickets() {
+    public ResponseEntity<Response> getTickets() throws InterruptedException {
+        //TimeUnit.SECONDS.sleep(3);
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(now())
@@ -54,6 +56,19 @@ public class TicketResource {
                         .timeStamp(now())
                         .data(Map.of("ticket", ticketService.get(id)))
                         .message("Ticket retrieved.")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @PutMapping("/put")
+    public ResponseEntity<Response> updateTicket(@RequestBody @Valid Ticket ticket) {
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timeStamp(now())
+                        .data(Map.of("ticket", ticketService.update(ticket)))
+                        .message("Ticket updated")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()

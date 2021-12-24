@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +38,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket update(Ticket ticket) {
         log.info("Updating ticket: {}", ticket.getId());
-        return ticketRepo.save(ticket);
+        Ticket ticketInDb = ticketRepo.getById(ticket.getId());
+        ticketInDb.setBriefDescription(ticket.getBriefDescription());
+        ticketInDb.setDetailedDescription(ticket.getDetailedDescription());
+        ticketInDb.setTicketStatus(ticket.getTicketStatus());
+        return ticketRepo.save(ticketInDb);
     }
 
     @Override
